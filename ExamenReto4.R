@@ -31,13 +31,7 @@ quantile(datos$Seasons, 0.25, na.rm = T)
 min(datos$Minutes, na.rm = T)
 min(datos$Seasons, na.rm = T)
 
-cuenta_nas_min <- datos %>% 
-  group_by(Minutes) %>% 
-  summarize(conteo = n())
-
-cuenta_nas_sea <- datos %>% 
-  group_by(Seasons) %>% 
-  summarize(conteo = n())
+miss_var_summary(datos)
 
 sd(datos$Minutes, na.rm = T)
 sd(datos$Seasons, na.rm = T)
@@ -48,3 +42,25 @@ tipos <- unique(datos$type)
 paises <- unique(datos$country)
 director <- unique(datos$director)
 
+# Analisis y limpieza de NAs
+
+miss_var_summary(datos)
+vis_miss(datos, cluster = T)
+
+# cas <- filter(datos, type == "TV Show")
+# miss_var_summary(cas)
+
+# Eliminaremos los valores faltantes de release_year debido a su poco impacto en el df
+which_na(datos$release_year)
+datos_filtrados <- datos[-c(which_na(datos$release_year)),]
+miss_var_summary(datos_filtrados)
+
+peliculas <- datos_filtrados %>% 
+  filter(type == "Movie")
+miss_var_summary(peliculas)
+peliculas <- peliculas[-c(which_na(peliculas$Minutes)),]
+
+show <- datos_filtrados %>% 
+  filter(type == "TV Show")
+miss_var_summary(show)
+show <- show[-c(which_na(show$Seasons)),]
